@@ -50,7 +50,8 @@ int main(){
     // cin>>command;
     
     // string command="#[Age, Roll_No, Name]($[(Age=19 && Name=\"Ayush Gangwar\") || Roll_No=3](Book1))";
-    string command = "$[Age=21](#[Name, Age]($[Roll_No=1](Book1)))";
+    // string command = "$[Age=21](#[Name, Age]($[Roll_No=1](Book1)))";
+    string command = "Book1 *[Roll_No = Student_Id] Book6";
     cout << command << endl;
     
     // #[deptId](dept) - #[deptId]($[Sex="F"](professor))

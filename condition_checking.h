@@ -3,6 +3,7 @@
 
 #include <bits/stdc++.h>
 #include "table_data_structure.h"
+#include "open_file.h"
 
 using namespace std;
 
@@ -116,13 +117,14 @@ bool compare_lhs_rhs(string lhs, string comp, string rhs){
 }
 
 bool does_satisfy_cond(string cond, Table* table, int kth_row){
+    
     string bool_exp;
     for(int i=0; i<cond.size(); i++){
         if(cond[i]=='=' || cond[i]=='<' || cond[i]=='>' || cond[i]=='!'){
             string lhs;
             int j;
             for(j=i-1; j>=0; j--){
-                if(cond[j]==' ' || cond[j]=='(' || cond[j]=='&' || cond[j]=='|' || cond[j]=='!'){
+                if(cond[j]=='(' || cond[j]=='&' || cond[j]=='|' || cond[j]=='!' || (cond[i]==' ' && lhs.size()>0)){
                     break;
                 }
                 lhs.push_back(cond[j]);
@@ -141,7 +143,7 @@ bool does_satisfy_cond(string cond, Table* table, int kth_row){
             string rhs;
             bool quotes=0;
             for(; j<cond.size(); j++){
-                if(quotes==0 && (cond[j]==' ' || cond[j]==')' || cond[j]=='&' || cond[j]=='|' || cond[j]=='!')){
+                if(quotes==0 && (cond[j]==')' || cond[j]=='&' || cond[j]=='|' || cond[j]=='!' || (cond[i]==' ' && rhs.size()>0))){
                     break;
                 }
                 
@@ -152,16 +154,41 @@ bool does_satisfy_cond(string cond, Table* table, int kth_row){
                 else rhs.push_back(cond[j]);
             }
             
+            lhs=remove_front_back_spaces(lhs);
+            rhs=remove_front_back_spaces(rhs);
+            
+            // cout << lhs << " " << comp << " " << rhs << endl;
+            // exit(0);
+            
             // get the index of the attribute(lhs)
-            int attribute_idx=0;
+            int attribute_idx_lhs=-1;
             for(int x=0; x<(table->attributes).size(); x++){
                 if((table->attributes)[x]==lhs){
-                    attribute_idx=x; break;
+                    attribute_idx_lhs=x; break;
                 }
             }
-            bool_exp.push_back('0'+compare_lhs_rhs((table->data)[kth_row][attribute_idx], comp, rhs));
             
-            // cout << attribute_idx << " " << lhs << " " << op << " " << rhs << endl;
+            int attribute_idx_rhs=-1;
+            for(int x=0; x<(table->attributes).size(); x++){
+                if((table->attributes)[x]==rhs){
+                    attribute_idx_rhs=x; break;
+                }
+            }
+            
+            if(attribute_idx_lhs==-1){
+                cout << "Attribute " << lhs << " does not exist in table" << endl;
+                exit(0);
+            }
+            
+            // cout << attribute_idx_lhs << " " << lhs << " " << comp << " " << " " << attribute_idx_rhs << " " << rhs << endl;
+            // exit(0);
+            
+            if(attribute_idx_rhs==-1){
+                bool_exp.push_back('0'+compare_lhs_rhs((table->data)[kth_row][attribute_idx_lhs], comp, rhs));
+            }
+            else{
+                bool_exp.push_back('0'+compare_lhs_rhs((table->data)[kth_row][attribute_idx_lhs], comp, (table->data)[kth_row][attribute_idx_rhs]));
+            }
             
             // bool_exp.push_back('0'+compare_lhs_rhs((table->data)[kth_row][(table->attribute_idx)[lhs]], comp, rhs));
         }
