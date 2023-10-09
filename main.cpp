@@ -45,22 +45,44 @@ Table* evaluate(string command){
 }
 
 int main(){
-    // string command;
-    // command="#[deptId](dept) - #[deptId]($[Sex=\"F\"](professor))";
-    // cin>>command;
+    // symbols used for different RA operators
+    // sigma : $[condition use && for AND, || for OR, ! for NOT]
+    // project : #[attributes comma separated]
+    // rename(rho) : %(not implemented yet)
+    // union : +
+    // intersection : ^
+    // set difference : -
+    // theta join : *[condition]
+    // cross product : @
+    // division : /
     
-    // string command="#[Age, Roll_No, Name]($[(Age=19 && Name=\"Ayush Gangwar\") || Roll_No=3](Book1))";
-    // string command = "$[Age=21](#[Name, Age]($[Roll_No=1](Book1)))";
-    string command = "Book1 *[Roll_No = Student_Id] Book6";
-    cout << command << endl;
+    // Sample tables are given as Book1, Book2 etc.
     
-    // #[deptId](dept) - #[deptId]($[Sex="F"](professor))
+    // SAMPLE COMMANDS
+    string command;
+    command = "$[Age=21](#[Name, Age]($[Roll_No=1](Book1)))";
+    // command="#[Age, Roll_No, Name]($[(Age=19 && Name=\"Ayush Gangwar\") || Roll_No=3](Book1))";
+    // command = "Book1 + Book3";
+    // command = "Book1 ^ Book3";
+    // command = "Book1 - Book3";
+    // command = "Book1 *[Roll_No = Student_Id] Book6";
+    // command = "Book1 @ Book2";
+    // command = "Book4 / Book5";
     
+    cout << "Command is: " << command << endl;
+    cout << endl;
+    
+    cout << "Result is: " << endl;
     Table *result = evaluate(command);
+    
+    // for(auto &x: (result->attributes)){
+    //     cout << x << "\t\t\t";
+    // }
+    // cout << endl;
     
     for(auto &x: (result->data)){
         for(auto &y: x){
-            cout << y << " ";
+            cout << y << "\t";
         }
         cout << endl;
     }
