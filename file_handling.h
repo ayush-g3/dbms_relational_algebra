@@ -41,7 +41,7 @@ Table* open_file(string file_name){
     ifstream file;
     string line;
     
-    file.open(file_name+".csv");
+    file.open("database/"+file_name+".csv");
     
     if(!file.good()){
         cout << "File not found!" << endl;
@@ -52,9 +52,6 @@ Table* open_file(string file_name){
     getline(file, line);
     vector<string> attributes = row_to_vector(line);
     (table->attributes) = attributes;
-    // for(int i=0; i<attributes.size(); i++){
-    //     (table->attribute_idx)[attributes[i]]=i;
-    // }
     
     // processing other rows
     while(getline(file, line)){
@@ -70,7 +67,7 @@ void write_file(Table* table, string name){
     ofstream file;
     
     name=remove_front_back_spaces(name);
-    file.open(name+".csv");
+    file.open("database/"+name+".csv");
     
     int n=(table->attributes).size();
     for(int i=0; i<n; i++){
