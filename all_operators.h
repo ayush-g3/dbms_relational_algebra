@@ -4,7 +4,7 @@
 #include<bits/stdc++.h>
 #include "table_data_structure.h"
 #include "condition_checking.h"
-#include "open_file.h"
+#include "file_handling.h"
 
 using namespace std;
 
@@ -100,12 +100,20 @@ Table* operator_project(Table *table, vector<string> &attribute_list){
     return result_table;
 }
 
-Table* operator_rename(Table *table, string oper){
-    // %[new_name(Roll_No, Name)](Book1)
-    cout << "Still to be implemented!" << endl;
-    exit(0);
+Table* operator_rename(Table *table, vector<string> &new_attribute_list){
+    // %[Roll_No, Name](Book1)
+    if(new_attribute_list.size()!=(table->attributes).size()){
+        cout << "No of attributes in rename operator is not valid!" << endl;
+        exit(0);
+    }
     
-    return NULL;
+    Table *result_table = new Table();
+    (result_table->attributes)=new_attribute_list;
+    for(auto &x: table->data){
+        (result_table->data).push_back(x);
+    }
+    
+    return result_table;
 }
 
 Table *operator_cross_product(Table *table1, Table *table2){
@@ -249,7 +257,9 @@ Table* do_operation(Table *a, string oper, Table *b){
         return operator_project(a, attribute_list);
     }
     else if(oper[0]=='%'){
-        return operator_rename(a, oper);
+        string new_attributes = extract_from_square_brackets(oper);
+        vector<string> new_attribute_list = row_to_vector(new_attributes);
+        return operator_rename(a, new_attribute_list);
     }
     else if(oper[0]=='@'){
         return operator_cross_product(a, b);

@@ -3,7 +3,7 @@
 
 #include <bits/stdc++.h>
 #include "table_data_structure.h"
-#include "open_file.h"
+#include "file_handling.h"
 
 using namespace std;
 
@@ -157,9 +157,6 @@ bool does_satisfy_cond(string cond, Table* table, int kth_row){
             lhs=remove_front_back_spaces(lhs);
             rhs=remove_front_back_spaces(rhs);
             
-            // cout << lhs << " " << comp << " " << rhs << endl;
-            // exit(0);
-            
             // get the index of the attribute(lhs)
             int attribute_idx_lhs=-1;
             for(int x=0; x<(table->attributes).size(); x++){
@@ -180,17 +177,12 @@ bool does_satisfy_cond(string cond, Table* table, int kth_row){
                 exit(0);
             }
             
-            // cout << attribute_idx_lhs << " " << lhs << " " << comp << " " << " " << attribute_idx_rhs << " " << rhs << endl;
-            // exit(0);
-            
             if(attribute_idx_rhs==-1){
                 bool_exp.push_back('0'+compare_lhs_rhs((table->data)[kth_row][attribute_idx_lhs], comp, rhs));
             }
             else{
                 bool_exp.push_back('0'+compare_lhs_rhs((table->data)[kth_row][attribute_idx_lhs], comp, (table->data)[kth_row][attribute_idx_rhs]));
             }
-            
-            // bool_exp.push_back('0'+compare_lhs_rhs((table->data)[kth_row][(table->attribute_idx)[lhs]], comp, rhs));
         }
         else if(cond[i]=='(' || cond[i]==')'){
             bool_exp.push_back(cond[i]);

@@ -1,5 +1,5 @@
-#ifndef OPEN_FILE_H
-#define OPEN_FILE_H
+#ifndef FILE_HANDLING_H
+#define FILE_HANDLING_H
 
 #include <bits/stdc++.h>
 #include "table_data_structure.h"
@@ -43,6 +43,11 @@ Table* open_file(string file_name){
     
     file.open(file_name+".csv");
     
+    if(!file.good()){
+        cout << "File not found!" << endl;
+        exit(0);
+    }
+    
     // processing the row of the attributes
     getline(file, line);
     vector<string> attributes = row_to_vector(line);
@@ -59,6 +64,33 @@ Table* open_file(string file_name){
     file.close();
     
     return table;
+}
+
+void write_file(Table* table, string name){
+    ofstream file;
+    
+    name=remove_front_back_spaces(name);
+    file.open(name+".csv");
+    
+    int n=(table->attributes).size();
+    for(int i=0; i<n; i++){
+        file << (table->attributes)[i];
+        if(i<n-1){
+            file << ",";
+        }
+    }
+    file << "\n";
+    
+    for(auto &row: table->data){
+        for(int i=0; i<n; i++){
+            file << row[i];
+            if(i<n-1){
+                file << ",";
+            }
+        }
+        file << "\n";
+    }
+    file.close();
 }
 
 #endif
