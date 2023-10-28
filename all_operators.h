@@ -27,8 +27,10 @@ string extract_from_square_brackets(string oper){
 }
 
 Table* operator_sigma(Table* table, string &cond){
+    // $[age=21]
     
     // cout << "cond: " << cond << endl;
+    // exit(0);
     
     set<vector<string>> result_set;
     // checking for kth row of table a
@@ -52,7 +54,7 @@ Table* operator_sigma(Table* table, string &cond){
 }
 
 Table* operator_project(Table *table, vector<string> &attribute_list){
-    // #[Roll_No]
+    // #[Roll_No, Name]
     
     // for(auto &x: attribute_list){
     //     cout << x << " ";
@@ -60,30 +62,31 @@ Table* operator_project(Table *table, vector<string> &attribute_list){
     // exit(0);
     
     vector<int> idx;
-    // for(auto &x: attribute_list){
-    //     idx.push_back((table->attribute_idx)[x]);
-    // }
     for(auto &x: attribute_list){
         for(int i=0; i<(table->attributes).size(); i++){
-            if(x==(table->attributes)[i]){
+            if(to_lowercase(x) == to_lowercase((table->attributes)[i])){
                 idx.push_back(i);
                 break;
             }
         }
     }
     
+    
     vector<string> required_attributes;
     for(auto &x: idx){
         required_attributes.push_back((table->attributes)[x]);
+    }
+    
+    if(required_attributes.size()!=attribute_list.size()){
+        cout << "Invalid attribute in project operator!" << endl;
+        exit(0);
     }
     
     
     Table *result_table = new Table();
     
     (result_table->attributes) = required_attributes;
-    // for(int i=0; i<required_attributes.size(); i++){
-    //     (table->attribute_idx)[required_attributes[i]]=i;
-    // }
+    
     set<vector<string>> result_set;
     for(int i=0; i<(table->data).size(); i++){
         vector<string> row;
@@ -117,7 +120,9 @@ Table* operator_rename(Table *table, vector<string> &new_attribute_list){
 }
 
 Table *operator_cross_product(Table *table1, Table *table2){
-    // the two tables should not have any common attribute names
+    // ideally the two tables should not have any common attribute names 
+    // because can't do table1.attr and tabl2.attr
+    
     Table *result_table = new Table();
     
     for(auto &x: (table1->attributes)){
@@ -154,7 +159,7 @@ Table *operator_cross_product(Table *table1, Table *table2){
 
 Table* operator_union(Table *table1, Table *table2){
     // check union compatiblity
-    if((table1->data)[0].size() != (table2->data)[0].size()){
+    if((table1->attributes).size() != (table2->attributes).size()){
         cout << "Union Incompatible" << endl;
         exit(0);
     }
@@ -178,7 +183,7 @@ Table* operator_union(Table *table1, Table *table2){
 
 Table* operator_set_difference(Table *table1, Table *table2){
     // check union compatibility
-    if((table1->data)[0].size() != (table2->data)[0].size()){
+    if((table1->attributes).size() != (table2->attributes).size()){
         cout << "Union Incompatible" << endl;
         exit(0);
     }
@@ -230,7 +235,7 @@ Table* operator_division(Table *table1, Table *table2){
     vector<string> attribute_list(attribute_set.begin(), attribute_set.end());
     
     Table *t1=operator_project(table1, attribute_list);
-    Table *t2=operator_project(operator_set_difference(operator_cross_product(t1, table2), table1), attribute_list);
+    Table *t2=operator_project(operator_set_difference(operator_project(operator_cross_product(t1, table2), table1->attributes), table1), attribute_list);
     
     Table *result_table = operator_set_difference(t1, t2);
     
@@ -245,6 +250,36 @@ Table* operator_join(Table* table1, string &cond, Table* table2){
     return operator_sigma(operator_cross_product(table1, table2), cond);
 }
 
+Table* operator_left_join(Table* table1, string &cond, Table* table2){
+    // cout << cond << endl; exit(0);
+    Table* tmp = operator_join(table1, cond, table2);
+    
+    Table* null_table = new Table();
+    null_table->attributes = table2->attributes;
+    vector<string> null_vector((table2->attributes).size(), "NULL");
+    (null_table->data).push_back(null_vector);
+    
+    Table* result_table = operator_union(tmp, operator_cross_product(operator_set_difference(table1, operator_project(tmp, table1->attributes)), null_table));
+    
+    delete(null_table);
+    return result_table;
+}
+
+Table* operator_right_join(Table* table1, string &cond, Table* table2){
+    // cout << cond << endl; exit(0);
+    Table* tmp = operator_join(table1, cond, table2);
+    
+    Table* null_table = new Table();
+    null_table->attributes = table1->attributes;
+    vector<string> null_vector((table1->attributes).size(), "NULL");
+    (null_table->data).push_back(null_vector);
+    
+    Table *result_table = operator_union(tmp, operator_cross_product(null_table, operator_set_difference(table2, operator_project(tmp, table2->attributes))));
+    
+    delete(null_table);
+    return result_table;
+}
+
 Table* do_operation(Table *a, string oper, Table *b){
     // complete set of operators $ # @ + -
     if(oper[0]=='$'){
@@ -253,12 +288,12 @@ Table* do_operation(Table *a, string oper, Table *b){
     }
     else if(oper[0]=='#'){
         string attributes = extract_from_square_brackets(oper);
-        vector<string> attribute_list = row_to_vector(attributes);
+        vector<string> attribute_list = split_by_comma(attributes);
         return operator_project(a, attribute_list);
     }
     else if(oper[0]=='%'){
         string new_attributes = extract_from_square_brackets(oper);
-        vector<string> new_attribute_list = row_to_vector(new_attributes);
+        vector<string> new_attribute_list = split_by_comma(new_attributes);
         return operator_rename(a, new_attribute_list);
     }
     else if(oper[0]=='@'){
@@ -276,9 +311,17 @@ Table* do_operation(Table *a, string oper, Table *b){
     else if(oper[0]=='/'){
         return operator_division(a, b);
     }
+    else if(oper[0]=='*' && oper[1]=='~'){
+        string condition = extract_from_square_brackets(oper);
+        return operator_right_join(a, condition, b);
+    }
     else if(oper[0]=='*'){
         string condition = extract_from_square_brackets(oper);
         return operator_join(a, condition, b);
+    }
+    else if(oper[0]=='~' && oper[1]=='*'){
+        string condition = extract_from_square_brackets(oper);
+        return operator_left_join(a, condition, b);
     }
     else{
         cout << "Invalid Operator!" << endl;

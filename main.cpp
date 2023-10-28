@@ -73,33 +73,7 @@ void print_table(Table* result){
 }
 
 int main(){
-    // symbols used for different RA operators
-    // sigma : $[condition use && for AND, || for OR, ! for NOT]
-    // project : #[attributes comma separated]
-    // rename : %[new attribute names comma separated]
-    // union : +
-    // intersection : ^
-    // set difference : -
-    // theta join : *[condition]
-    // cross product : @
-    // division : /
-    // for saving the result use <-
-    // give the string/character literals within double quotes
-    
-    // Sample tables are given as Book1, Book2 etc.
-    
-    // SAMPLE COMMANDS
     string command;
-    // command = "temp <- $[Age=21](#[Name, Age]($[Roll_No=1](Book1)))";
-    // command = "$[Age=21](#[Name, Age]($[Roll_No=1](Book1)))";
-    // command="#[Age, Roll_No, Name]($[(Age=19 && Name=\"Ayush Gangwar\") || Roll_No=3](Book1))";
-    // command = "%[roll2, name2, age2](Book1)";
-    // command = "Book1 + Book3";
-    // command = "Book1 ^ Book3";
-    // command = "Book1 - Book3";
-    // command = "Book1 *[Roll_No = Student_Id] Book6";
-    // command = "Book1 @ Book2";
-    // command = "Book4 / Book5";
     
     while(1){
         cout << "Enter Command: ";
@@ -133,7 +107,7 @@ int main(){
             
         }
         catch (...){
-            cout << "An Error Occured" << endl;
+            cout << "Some Error Occured" << endl;
         }
     }
     

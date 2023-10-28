@@ -1,0 +1,34 @@
+$[name="giridhar"](professor)
+
+$[startyear>=1980 && startyear<1985](professor)
+
+#[rollno, name](student)
+
+#[name]($[degree=\"m.s\"](student))
+
+
+
+Obtain the list of professors along with the name of their
+departments.
+    profDetail <- %[eId, pname, deptno](#[empid, name, deptno](professor))
+    
+    deptDetail <- %[dId, dname](#[deptId, name](department))
+    
+    profDept <- profDetail @ deptDetail
+    
+    desiredProfDept <- $[deptno=did](profdept)
+    
+    result <- #[eid, pname, dname](desiredProfdept)
+
+
+
+For each department, find its name and the name, sex and phone number of
+the head of the department.
+    prof <- %[empId, p-name, sex, deptNo, prof-phone](#[empid, name, sex, deptno, phone](professor))
+    
+    result <- #[deptid, name, hod, p-name, sex, prof-phone](department *[empid=hod && deptno=deptid] prof)
+
+
+
+Find courses offered by each department.
+    #[deptid, name, courseid, cname, credits](department *[deptid=deptno] courses)

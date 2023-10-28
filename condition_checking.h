@@ -7,6 +7,15 @@
 
 using namespace std;
 
+string to_lowercase(string s){
+    for(int i=0; i<s.size(); i++){
+        if(s[i]>='A' && s[i]<='Z'){
+            s[i]+=32;
+        }
+    }
+    return s;
+}
+
 string infix_to_postfix_for_boolean(string bool_exp){
     stack<char> st;
     
@@ -92,11 +101,12 @@ bool evaluate_boolean_expression(string bool_exp){
 
 bool compare_lhs_rhs(string lhs, string comp, string rhs){
     // cout << "check_condition " << lhs << " " << comp << " " << rhs << endl;
+    // exit(0);
     if(comp=="="){
-        return lhs==rhs;
+        return to_lowercase(lhs)==to_lowercase(rhs);
     }
     else if(comp=="!="){
-        return lhs!=rhs;
+        return to_lowercase(lhs)!=to_lowercase(rhs);
     }
     else if(comp=="<"){
         return stoi(lhs)<stoi(rhs);
@@ -111,13 +121,12 @@ bool compare_lhs_rhs(string lhs, string comp, string rhs){
         return stoi(lhs)>=stoi(rhs);
     }
     else{
-        cout << "error" ;
+        cout << "error while condition checking!" << endl;
         exit(0);
     }
 }
 
 bool does_satisfy_cond(string cond, Table* table, int kth_row){
-    
     string bool_exp;
     for(int i=0; i<cond.size(); i++){
         if(cond[i]=='=' || cond[i]=='<' || cond[i]=='>' || cond[i]=='!'){
@@ -135,7 +144,9 @@ bool does_satisfy_cond(string cond, Table* table, int kth_row){
             string comp;
             comp.push_back(cond[i]);
             j=i+1;
+            bool ignore_next_step=0;
             if(cond[j]=='='){
+                ignore_next_step=1;
                 comp.push_back(cond[j]);
                 j++;
             }
@@ -154,20 +165,20 @@ bool does_satisfy_cond(string cond, Table* table, int kth_row){
                 else rhs.push_back(cond[j]);
             }
             
-            lhs=remove_front_back_spaces(lhs);
-            rhs=remove_front_back_spaces(rhs);
+            lhs=to_lowercase(remove_front_back_spaces(lhs));
+            rhs=to_lowercase(remove_front_back_spaces(rhs));
             
             // get the index of the attribute(lhs)
             int attribute_idx_lhs=-1;
             for(int x=0; x<(table->attributes).size(); x++){
-                if((table->attributes)[x]==lhs){
+                if(to_lowercase((table->attributes)[x])==lhs){
                     attribute_idx_lhs=x; break;
                 }
             }
             
             int attribute_idx_rhs=-1;
             for(int x=0; x<(table->attributes).size(); x++){
-                if((table->attributes)[x]==rhs){
+                if(to_lowercase((table->attributes)[x])==rhs){
                     attribute_idx_rhs=x; break;
                 }
             }
@@ -183,6 +194,7 @@ bool does_satisfy_cond(string cond, Table* table, int kth_row){
             else{
                 bool_exp.push_back('0'+compare_lhs_rhs((table->data)[kth_row][attribute_idx_lhs], comp, (table->data)[kth_row][attribute_idx_rhs]));
             }
+            if(ignore_next_step) i++;
         }
         else if(cond[i]=='(' || cond[i]==')'){
             bool_exp.push_back(cond[i]);

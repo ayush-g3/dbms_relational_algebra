@@ -1,0 +1,7 @@
+rollNo,name,degree,year,sex,deptNo,advisor
+CS04S001,Mahesh,M.S,2004,M,1,CS01
+CS03S001,Rajesh,M.S,2003,M,1,CS02
+CS04M002,Piyush,M.E,2004,M,1,CS01
+ES04M001,Deepak,M.E,2004,M,2,ES01
+ME04M001,Lalitha,M.E,2004,F,3,ME01
+ME03M002,Mahesh,M.S,2003,M,3,ME01

@@ -20,7 +20,7 @@ string remove_front_back_spaces(string s){
     return res;
 }
 
-vector<string> row_to_vector(string &row){
+vector<string> split_by_comma(string &row){
     string tmp;
     vector<string> extracted_row;
     for(auto &x: row){
@@ -50,12 +50,12 @@ Table* open_file(string file_name){
     
     // processing the row of the attributes
     getline(file, line);
-    vector<string> attributes = row_to_vector(line);
+    vector<string> attributes = split_by_comma(line);
     (table->attributes) = attributes;
     
     // processing other rows
     while(getline(file, line)){
-        (table->data).push_back(row_to_vector(line));
+        (table->data).push_back(split_by_comma(line));
     }
     
     file.close();

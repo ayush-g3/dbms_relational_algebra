@@ -17,6 +17,7 @@ vector<string> infix_to_postfix(string command){
     precedence['$']=3;
     precedence['#']=3;
     precedence['%']=3;
+    precedence['~']=2;
     precedence['*']=2;
     precedence['@']=2;
     precedence['/']=2;
@@ -55,6 +56,18 @@ vector<string> infix_to_postfix(string command){
             // extract the operator from command, 
             // here the operator can be of length more than 1 also eg. $[]
             string op; op.push_back(command[i]);
+            if(op=="*" && command[i+1]=='~'){
+                i++;
+                op.push_back(command[i]);
+            }
+            if(op=="~"){
+                i++;
+                if(command[i]!='*'){
+                    cout << "Invalid operator!" << endl;
+                    exit(0);
+                }
+                op.push_back(command[i]);
+            }
             int j=i+1;
             while(j<command.size() && command[j]==' ') j++;
             if(j<command.size() && command[j]=='['){
