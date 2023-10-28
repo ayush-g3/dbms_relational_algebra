@@ -117,17 +117,23 @@ int main(){
             command=command.substr(found+2);
         }
         
-        Table *result = evaluate(command);
-        
-        if(result==NULL){
-            cout << "NULL returned!" << endl;
-            exit(0);
+        try{
+            Table *result = evaluate(command);
+            if(result!=NULL){
+                print_table(result);
+                
+                if(save){
+                    write_file(result, save_name);
+                    cout << "Result has been saved!\n" << endl;
+                }
+            }
+            else{
+                cout << "NULL returned" << endl;
+            }
+            
         }
-        
-        print_table(result);
-        
-        if(save){
-            write_file(result, save_name);
+        catch (...){
+            cout << "An Error Occured" << endl;
         }
     }
     
