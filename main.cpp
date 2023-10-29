@@ -6,27 +6,25 @@
 
 using namespace std;
 
-
+// function to evaluate the command
 Table* evaluate(string command){
     vector<string> postfix = infix_to_postfix(command);
-    
-    // for(auto &x: postfix){
-    //     cout << x << " " ;
-    // }
-    
-    // exit(0);
     
     stack<Table *> st;
     
     for(int i=0; i<postfix.size(); i++){
         if(isOperand(postfix[i][0])){
-            st.push(open_file(postfix[i]));
+            Table* table=open_file(postfix[i]);
+            if(table==NULL) return NULL;
+            st.push(table);
         }
         else{
             // for unary operator
             if(postfix[i][0]=='$' || postfix[i][0]=='#' || postfix[i][0]=='%'){
                 Table *a=st.top(); st.pop();
-                st.push(do_operation(a, postfix[i], NULL));
+                Table* table=do_operation(a, postfix[i], NULL);
+                if(table==NULL) return NULL;
+                st.push(table);
                 
                 delete(a);
             }
@@ -35,13 +33,17 @@ Table* evaluate(string command){
                 Table *b=st.top(); st.pop(); 
                 Table *a=st.top(); st.pop();
                 
-                st.push(do_operation(a, postfix[i], b));
+                Table* table=do_operation(a, postfix[i], b);
+                if(table==NULL) return NULL;
+                st.push(table);
                 
                 delete(a); delete(b);
             }
         }
     }
-    return st.top();
+    
+    if(st.size()>0) return st.top();
+    return NULL;
 }
 
 void print_table(Table* result){

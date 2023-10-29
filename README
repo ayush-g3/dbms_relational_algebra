@@ -29,18 +29,18 @@ Note that there should not be any blank lines anywhere in csv files
  
 
 SAMPLE COMMANDS 
-command = "temp <- $[Age=21](#[Name, Age]($[Roll_No=1](Book1)))"; 
-command = "$[Age=21](#[Name, Age]($[Roll_No=1](Book1)))"; 
-command="#[Age, Roll_No, Name]($[(Age=19 && Name=\"Ayush Gangwar\") || Roll_No=3](Book1))"; 
-command = "%[roll2, name2, age2](Book1)"; 
-command = "Book1 + Book3"; 
-command = "Book1 ^ Book3"; 
-command = "Book1 - Book3"; 
-command = "Book1 *[Roll_No = Student_Id] Book6"; 
-command = "Book1 ~*[Roll_No = Student_Id] Book6"; 
-command = "Book6 *~[Roll_No = Student_Id] Book1"; 
-command = "Book1 @ Book2"; 
-command = "Book4 / Book5"; 
+temp <- $[Age=21](#[Name, Age]($[Roll_No=1](Book1)))
+$[Age=21](#[Name, Age]($[Roll_No=1](Book1)))
+#[Age, Roll_No, Name]($[(Age=19 && Name="Ayush Gangwar") || Roll_No=3](Book1))
+%[roll2, name2, age2](Book1)
+Book1 + Book3
+Book1 ^ Book3
+Book1 - Book3
+Book1 *[Roll_No = Student_Id] Book6
+Book1 ~*[Roll_No = Student_Id] Book6
+Book6 *~[Roll_No = Student_Id] Book1
+Book1 @ Book2
+Book4 / Book5
  
 
  

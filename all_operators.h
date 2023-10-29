@@ -8,8 +8,8 @@
 
 using namespace std;
 
+// extracts the string within square brackets [abc] -> abc
 string extract_from_square_brackets(string oper){
-    // extracting the condition given in []
     string cond;
     for(int i=0, f=0; i<oper.size(); i++){
         if(f==1){
@@ -21,16 +21,12 @@ string extract_from_square_brackets(string oper){
         }
     }
     
-    // cout << "cond: " << cond << endl;
-    
     return cond;
 }
 
 Table* operator_sigma(Table* table, string &cond){
-    // $[age=21]
-    
-    // cout << "cond: " << cond << endl;
-    // exit(0);
+    // $[age=21](Book1)
+    // cond : age=21
     
     set<vector<string>> result_set;
     // checking for kth row of table a
@@ -54,12 +50,8 @@ Table* operator_sigma(Table* table, string &cond){
 }
 
 Table* operator_project(Table *table, vector<string> &attribute_list){
-    // #[Roll_No, Name]
-    
-    // for(auto &x: attribute_list){
-    //     cout << x << " ";
-    // }
-    // exit(0);
+    // #[Roll_No, Name](Book1)
+    // attribute_list : Roll_No, Name
     
     vector<int> idx;
     for(auto &x: attribute_list){
@@ -71,7 +63,6 @@ Table* operator_project(Table *table, vector<string> &attribute_list){
         }
     }
     
-    
     vector<string> required_attributes;
     for(auto &x: idx){
         required_attributes.push_back((table->attributes)[x]);
@@ -79,7 +70,7 @@ Table* operator_project(Table *table, vector<string> &attribute_list){
     
     if(required_attributes.size()!=attribute_list.size()){
         cout << "Invalid attribute in project operator!" << endl;
-        exit(0);
+        return NULL;
     }
     
     
@@ -104,10 +95,12 @@ Table* operator_project(Table *table, vector<string> &attribute_list){
 }
 
 Table* operator_rename(Table *table, vector<string> &new_attribute_list){
-    // %[Roll_No, Name](Book1)
+    // %[Roll_No2, Name2](#[Roll_No, Name](book1))
+    // new_attribute_list : Roll_No2, Name2
+    
     if(new_attribute_list.size()!=(table->attributes).size()){
         cout << "No of attributes in rename operator is not valid!" << endl;
-        exit(0);
+        return NULL;
     }
     
     Table *result_table = new Table();
@@ -161,7 +154,7 @@ Table* operator_union(Table *table1, Table *table2){
     // check union compatiblity
     if((table1->attributes).size() != (table2->attributes).size()){
         cout << "Union Incompatible" << endl;
-        exit(0);
+        return NULL;
     }
     
     set<vector<string>> result_set;
@@ -185,7 +178,7 @@ Table* operator_set_difference(Table *table1, Table *table2){
     // check union compatibility
     if((table1->attributes).size() != (table2->attributes).size()){
         cout << "Union Incompatible" << endl;
-        exit(0);
+        return NULL;
     }
     
     set<vector<string>> result_set;
@@ -246,12 +239,12 @@ Table* operator_division(Table *table1, Table *table2){
 }
 
 Table* operator_join(Table* table1, string &cond, Table* table2){
-    // cout << cond << endl; exit(0);
+    // ideally the two tables should not have any common attribute names 
+    // because can't do table1.attr and tabl2.attr
     return operator_sigma(operator_cross_product(table1, table2), cond);
 }
 
 Table* operator_left_join(Table* table1, string &cond, Table* table2){
-    // cout << cond << endl; exit(0);
     Table* tmp = operator_join(table1, cond, table2);
     
     Table* null_table = new Table();
@@ -266,7 +259,6 @@ Table* operator_left_join(Table* table1, string &cond, Table* table2){
 }
 
 Table* operator_right_join(Table* table1, string &cond, Table* table2){
-    // cout << cond << endl; exit(0);
     Table* tmp = operator_join(table1, cond, table2);
     
     Table* null_table = new Table();
@@ -325,7 +317,7 @@ Table* do_operation(Table *a, string oper, Table *b){
     }
     else{
         cout << "Invalid Operator!" << endl;
-        exit(0);
+        return NULL;
     }
 }
 

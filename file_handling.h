@@ -35,6 +35,7 @@ vector<string> split_by_comma(string &row){
     return extracted_row;
 }
 
+// function to read csv file
 Table* open_file(string file_name){
     Table* table=new Table();
     
@@ -45,7 +46,7 @@ Table* open_file(string file_name){
     
     if(!file.good()){
         cout << "File not found!" << endl;
-        exit(0);
+        return NULL;
     }
     
     // processing the row of the attributes
@@ -55,6 +56,7 @@ Table* open_file(string file_name){
     
     // processing other rows
     while(getline(file, line)){
+        if(line=="") continue;
         (table->data).push_back(split_by_comma(line));
     }
     
@@ -63,6 +65,7 @@ Table* open_file(string file_name){
     return table;
 }
 
+// function to write csv file
 void write_file(Table* table, string name){
     ofstream file;
     

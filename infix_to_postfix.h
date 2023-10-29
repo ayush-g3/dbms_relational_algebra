@@ -12,6 +12,7 @@ bool isOperand(char s){
     return 0;
 }
 
+// function to convert the command to postfix
 vector<string> infix_to_postfix(string command){
     map<char, int> precedence;
     precedence['$']=3;
@@ -36,8 +37,6 @@ vector<string> infix_to_postfix(string command){
                 operand.push_back(command[j]);
                 j++;
             }
-            
-            // cout << "operand: " << operand << endl;
             
             postfix.push_back(operand);
             i=j-1;
@@ -64,7 +63,7 @@ vector<string> infix_to_postfix(string command){
                 i++;
                 if(command[i]!='*'){
                     cout << "Invalid operator!" << endl;
-                    exit(0);
+                    return {};
                 }
                 op.push_back(command[i]);
             }
@@ -78,8 +77,6 @@ vector<string> infix_to_postfix(string command){
                 op.push_back(']'); j++;
             }
             i=j-1;
-            
-            // cout << "op: " << op << endl;
             
             if(st.size()==0 || st.top()=="("){
                 st.push(op);

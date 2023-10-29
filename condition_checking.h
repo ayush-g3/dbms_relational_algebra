@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// converts a string to lowercase
 string to_lowercase(string s){
     for(int i=0; i<s.size(); i++){
         if(s[i]>='A' && s[i]<='Z'){
@@ -16,6 +17,7 @@ string to_lowercase(string s){
     return s;
 }
 
+// converts a boolean expression to postfix
 string infix_to_postfix_for_boolean(string bool_exp){
     stack<char> st;
     
@@ -64,6 +66,7 @@ string infix_to_postfix_for_boolean(string bool_exp){
     return postfix;
 }
 
+// evaluates the final truth value of a boolean expression
 bool evaluate_boolean_expression(string bool_exp){
     string postfix=infix_to_postfix_for_boolean(bool_exp);
     
@@ -91,17 +94,18 @@ bool evaluate_boolean_expression(string bool_exp){
             st.push(postfix[i]-'0');
         }
         else{
-            cout << "error" ;
-            exit(0);
+            cout << "Error while condition checking!" << endl;
+            return 0;
         }
     }
     
-    return st.top();
+    if(st.size()>0) return st.top();
+    return 1;
 }
 
+// finds the truth value of a condition
 bool compare_lhs_rhs(string lhs, string comp, string rhs){
-    // cout << "check_condition " << lhs << " " << comp << " " << rhs << endl;
-    // exit(0);
+    
     if(comp=="="){
         return to_lowercase(lhs)==to_lowercase(rhs);
     }
@@ -121,11 +125,12 @@ bool compare_lhs_rhs(string lhs, string comp, string rhs){
         return stoi(lhs)>=stoi(rhs);
     }
     else{
-        cout << "error while condition checking!" << endl;
-        exit(0);
+        cout << "Invalid comparator!" << endl;
+        return 0;
     }
 }
 
+// function to check whether the kth row of table satisfies a given condition or not
 bool does_satisfy_cond(string cond, Table* table, int kth_row){
     string bool_exp;
     for(int i=0; i<cond.size(); i++){
@@ -185,7 +190,7 @@ bool does_satisfy_cond(string cond, Table* table, int kth_row){
             
             if(attribute_idx_lhs==-1){
                 cout << "Attribute " << lhs << " does not exist in table" << endl;
-                exit(0);
+                return 0;
             }
             
             if(attribute_idx_rhs==-1){
