@@ -105,7 +105,12 @@ Table* operator_rename(Table *table, vector<string> &new_attribute_list){
     
     Table *result_table = new Table();
     (result_table->attributes)=new_attribute_list;
+    set<vector<string>> result_set;
     for(auto &x: table->data){
+        result_set.insert(x);
+    }
+    
+    for(auto &x: result_set){
         (result_table->data).push_back(x);
     }
     
